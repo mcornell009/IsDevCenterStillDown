@@ -34,7 +34,7 @@ class color:
    UNDERLINE = '\033[4m'
    END = '\033[0m'
 
-def getStatuses(table):
+def getStatuses():
 	content = urllib.urlopen(devcenter_url).read()
 	start = content.index("<table")
 	end = content.index("</table>")
@@ -79,6 +79,6 @@ Subject: Apple Dev Center update
 
 def runLoop():
 	while 1:
-		getStatuses(table)
+		getStatuses()
 		sleep(60)
 runLoop()
