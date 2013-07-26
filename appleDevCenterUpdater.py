@@ -21,7 +21,6 @@ receivers = [sender,'my_team@mydomain.com']
 
 devcenter_url = "https://developer.apple.com/support/system-status/"
 statuses = dict()
-table = str()
 
 class color:
    PURPLE = '\033[95m'
@@ -36,6 +35,10 @@ class color:
    END = '\033[0m'
 
 def getStatuses(table):
+	content = urllib.urlopen(devcenter_url).read()
+	start = content.index("<table")
+	end = content.index("</table>")
+	table = content[start:end]
 	strIndexes = [(m.start(0), m.end(0)) for m in re.finditer("<td class=.*</td>", table)]
 	for lineIndex in strIndexes:
 		line = table[lineIndex[0]:lineIndex[1]]
@@ -74,17 +77,8 @@ Subject: Apple Dev Center update
 	except smtplib.SMTPException:
 	    print "Error: unable to send email"
 
-def getContentTable():
-	content = urllib.urlopen(devcenter_url).read()
-	start = content.index("<table")
-	end = content.index("</table>")
-	table = content[start:end]
-	getStatuses(table)
-
 def runLoop():
 	while 1:
 		getStatuses(table)
 		sleep(60)
-
-getContentTable() #preload + print current status
-runLoop() #loop
+runLoop()
